@@ -4,8 +4,13 @@ enum CURRENCY {
     USD = 'USD',
 }   
 
-const CURRENCY_FORMATTER = new Intl.NumberFormat(undefined, {
-    currency: CURRENCY.USD, style: 'currency'
+enum LOCALE {
+    NG = 'en-NG',
+    US = 'en-US'
+}
+
+const CURRENCY_FORMATTER = new Intl.NumberFormat(LOCALE.NG, {
+    currency: CURRENCY.NGN, style: 'currency'
 })
 
 export function formatCurrency(number: number) {

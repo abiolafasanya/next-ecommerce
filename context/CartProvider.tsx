@@ -1,14 +1,15 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useLayoutEffect } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 type PropTypes = {
   [name: string]: React.Context<{}> | React.PropsWithChildren | any;
 };
 
-type ShoppingCartContext = {
-  getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (id: number) => void;
-  decreaseCartQuantity: (id: number) => void;
-  removeCartQuantity: (id: number) => void;
+type ShoppingCartContext = {  
+  getItemQuantity: (id: string) => number;
+  increaseCartQuantity: (id: string) => void;
+  decreaseCartQuantity: (id: string) => void;
+  removeCartQuantity: (id: string) => void;
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -17,14 +18,18 @@ type ShoppingCartContext = {
 };
 
 type CartItem = {
-  id: number;
+  id: string;
   quantity: number;
 };
 
 const CartContext = createContext({} as ShoppingCartContext);
 
 export const CartProvider: React.FC<PropTypes> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
+    'shopping-cart',
+    []
+  );
+
   const [isOpen, setIsOpen] = useState(false);
 
   function openCart() {
@@ -34,11 +39,11 @@ export const CartProvider: React.FC<PropTypes> = ({ children }) => {
     setIsOpen(false);
   }
 
-  function getItemQuantity(id: number): number {
+  function getItemQuantity(id: string): number {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
   }
 
-  function increaseCartQuantity(id: number) {
+  function increaseCartQuantity(id: string) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id) == null) {
         return [...currItems, { id, quantity: 1 }];
@@ -54,7 +59,7 @@ export const CartProvider: React.FC<PropTypes> = ({ children }) => {
     });
   }
 
-  function decreaseCartQuantity(id: number) {
+  function decreaseCartQuantity(id: string) {
     setCartItems((currItems) => {
       if (currItems.find((item) => item.id === id)?.quantity === 1) {
         return currItems.filter((item) => item.id !== id);
@@ -70,7 +75,7 @@ export const CartProvider: React.FC<PropTypes> = ({ children }) => {
     });
   }
 
-  function removeCartQuantity(id: number) {
+  function removeCartQuantity(id: string) {
     setCartItems((currItems) => {
       return currItems.filter((item) => item.id !== id);
     });

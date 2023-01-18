@@ -6,13 +6,13 @@ import UseCart from '../hooks/useCart';
 import ContentLoader, { Facebook } from 'react-content-loader';
 
 interface ItemProp {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  imgUrl: string;
+  image: string | null;
 }
 
-const StoreItem: React.FC<ItemProp> = ({ id, name, price, imgUrl }) => {
+const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
@@ -42,7 +42,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, imgUrl }) => {
       ) : (
         <div className="flex flex-col card bg-white/50 border rounded-md shadow-lg w-full p-0">
           <Image
-            src={imgUrl}
+            src={image || ''}
             className="w-full"
             width={250}
             height={250}
@@ -52,7 +52,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, imgUrl }) => {
             <div className="text-lg font-semibold">{name}</div>
             <div className="text-medium">{formatCurrency(price)}</div>
           </div>
-          <div className="my-2 mx-3 ">
+          <div className="my-2 mx-3 text-black">
             {quantity === 0 ? (
               <Button
                 className="w-full bg-yellow-500 hover:bg-yellow-600 px-5 py-2 rounded"
@@ -69,7 +69,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, imgUrl }) => {
                   >
                     -
                   </Button>
-                  <div>
+                  <div className='text-black'>
                     <span className="text-xl font-semibold">{quantity}</span> in
                     Cart
                   </div>

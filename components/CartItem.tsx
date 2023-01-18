@@ -5,21 +5,29 @@ import storeData from '../data/items.json';
 import { formatCurrency } from '../utils/formatter';
 import Button from './Button';
 import { MdCancel, MdClose } from 'react-icons/md';
+import { Product } from '@prisma/client';
 
 type CartItemProps = {
-  id: number;
+  id: string;
   quantity: number;
+  products: Product[];
 };
 
-const CartItem = ({ id, quantity }: CartItemProps) => {
+const CartItem = ({ id, quantity, products }: CartItemProps) => {
   const { removeCartQuantity, increaseCartQuantity } = UseCart();
-  const item = storeData.find((item) => item.id === id);
+  const item =
+    products.length > 0 ? products.find((item) => item.id === id) : null;
   if (item == null) return null;
 
   return (
     <div className="flex items-center justify-between text-black bg-white rounded-md shadow-lg shadow-orange-50 mx-3">
       <div className="flex space-x-px items-center">
-        <Image src={item.imgUrl} height={75} width={125} alt={item.name} />
+        <Image
+          src={item.image as string}
+          height={75}
+          width={125}
+          alt={item.name}
+        />
         <h5 className="text-sm font-semibold">{item.name}</h5>
       </div>
       <div>{quantity}</div>
