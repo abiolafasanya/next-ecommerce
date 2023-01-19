@@ -9,7 +9,9 @@ import * as Yup from 'yup';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import NoSSR from '../../components/NoSSR';
 import Axios from '../../utils/Axios';
-import Category from '../../components/category';
+import CategoryPage from '../../components/CategoryPage';
+import { Category, PrismaClient } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 
 const Editor = dynamic<EditorProps>(
   () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
@@ -24,11 +26,13 @@ interface MyFormValues {
   category: string[];
 }
 
-const AddProduct: React.FC<{}> = () => {
-  const nameRef = useRef<HTMLInputElement>();
-  const priceRef = useRef<HTMLInputElement>();
-  const briefRef = useRef<HTMLInputElement>();
-  const [category, setCategory] = useState([]);
+type Iprops = {
+  categories : Category[];
+}
+
+const AddProduct: React.FC<Iprops> = ({categories}) => {
+
+  const [category, setCategory] = useState<any>([]);
 
   const [editorState, setEditorState] = useState<EditorState>(
     EditorState.createEmpty()
@@ -49,10 +53,11 @@ const AddProduct: React.FC<{}> = () => {
 
   async function handleSubmit(event: any) {
     event.preventDefault();
+    const {name, price, brief} = event.target.elements;
     const formData = {
-      name: nameRef.current?.value,
-      price: parseFloat(priceRef.current?.value),
-      brief: briefRef.current?.value,
+      name: name.value,
+      price: parseFloat(price.value),
+      brief: brief.value,
       category,
       description: draftToHtml(convertToRaw(editorState.getCurrentContent())),
     };
@@ -77,13 +82,13 @@ const AddProduct: React.FC<{}> = () => {
               <label htmlFor="name" className="form-label">
                 Product Name
               </label>
-              <input type="text" ref={nameRef} className="form-control" />
+              <input type="text" className="form-control" />
             </div>
             <div className="form-group">
               <label htmlFor="name" className="form-label">
                 Brief
               </label>
-              <input type="text" ref={briefRef} className="form-control" />
+              <input type="text" className="form-control" />
             </div>
             <div className="form-group">
               <label htmlFor="name" className="form-label">
@@ -106,7 +111,6 @@ const AddProduct: React.FC<{}> = () => {
               </label>
               <input
                 type="number"
-                ref={priceRef}
                 step="0.01"
                 className="form-control"
               />
@@ -130,10 +134,21 @@ const AddProduct: React.FC<{}> = () => {
             </div>
           </form>
         </div>
-        <Category className="lg:w-[25%] p-5" />
+        <CategoryPage categories={categories} className="lg:w-[25%] p-5" />
       </div>
     </NoSSR>
   );
 };
 
 export default AddProduct;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+  const client = prisma.category;
+  const categories = await client.findMany();
+  return {
+    props: {
+      categories: JSON.parse(JSON.stringify(categories)),
+    },
+  };
+};

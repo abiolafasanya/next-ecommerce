@@ -2,14 +2,13 @@ import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React, { useRef } from 'react';
 import Axios from '../utils/Axios';
-import NoSSR from './NoSSR';
 
 type Iprops = {
   categories: Category[];
   className: string;
 };
 
-const Category = ({ categories, className }: Iprops) => {
+const CategoryPage = ({ categories, className }: Iprops) => {
   async function handleSubmit(e: any) {
     e.preventDefault();
     const { category } = e.target.elements;
@@ -62,15 +61,15 @@ const Category = ({ categories, className }: Iprops) => {
   );
 };
 
-export default Category;
+export default CategoryPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
-  const client = prisma.category;
-  const categories = await client.findMany();
-  return {
-    props: {
-      categories: JSON.parse(JSON.stringify(categories)),
-    },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const prisma = new PrismaClient();
+//   const client = prisma.category;
+//   const categories = await client.findMany();
+//   return {
+//     props: {
+//       categories: JSON.parse(JSON.stringify(categories)),
+//     },
+//   };
+// };
