@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useRouter } from 'next/router';
-import { AlertMsg as Alert } from '@utility/Alert';
-import socialProvider from 'data/provider';
+import { AlertMsg as Alert } from '../components/Alert';
+import socialProvider from '../data/provider';
 import { useSession, signIn, getCsrfToken } from 'next-auth/react';
 import { GetServerSideProps, NextPage } from 'next';
-import useAuth from 'hooks/useAuth';
+import useAuth from '../hooks/useAuth';
 import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -22,13 +22,13 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    console.log(session);
-    if (status !== 'unauthenticated') {
+    // console.log(session);
+    if (status === 'authenticated') {
       setTimeout(() => {
-        push('/dashboard');
-      }, 300);
+        push('/');
+      }, 500);
     }
-  }, []);
+  }, [status]);
 
   const [email, setEmail] = useState('');
   const [OAuthEmail, setOAuthEmail] = useState('');
@@ -46,7 +46,7 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
       email,
       password,
       redirect: false,
-      callbackUrl: `/dashboard?callbackUrl=${asPath}`,
+      callbackUrl: `?callbackUrl=${asPath}`,
     });
 
     let data = await req;
@@ -61,8 +61,8 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
       }, 5000);
       console.log(data);
     }
-    console.log(data)
-     if(data?.ok === true && data?.status === 200) {
+    console.log(data);
+    if (data?.ok === true && data?.status === 200) {
       setSuccess(true);
       setMessage('Logged in successfully');
       setIsAuth(false);
@@ -76,7 +76,7 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
           ok: data?.ok,
         });
         setIsAuth(data?.ok as boolean);
-        push('/dashboard');
+        push('/');
       }, 5000);
     }
   }
@@ -137,7 +137,7 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
               <div className="form-group">
                 <div className="flex justify-between items-center">
                   <button className="btn">Submit</button>
-                  <Link href="/auth/register">
+                  <Link href="/register">
                     Not Registered?{' '}
                     <span className="text-blue-500">Signup</span>
                   </Link>

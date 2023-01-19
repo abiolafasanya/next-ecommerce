@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MdPersonOutline, MdVerifiedUser } from 'react-icons/md';
+import { useSession, getSession } from 'next-auth/react';
+
 import { dropMenu } from '../data/drop';
 import Link from 'next/link';
 
 const DropDown = () => {
   const [open, setOpen] = useState(false);
+  const { status, data: session } = useSession();
   return (
     <div className="relative flex items-center">
       <button
@@ -18,7 +21,7 @@ const DropDown = () => {
         }}
       >
         <MdPersonOutline className="inline-block mr-2 text-2xl" />
-        Account
+        {session?.user?.name || 'Account'}
       </button>
       <MdPersonOutline
         className="sm:flex md:hidden inline-block mr-2 text-3xl text-white border p-1 h-10 w-10 rounded-full"
@@ -37,9 +40,19 @@ const DropDown = () => {
           animate={{ opacity: 1 }}
         >
           <div className="mx-auto">
-            <button className="btn px-10 py-3 rounded-sm bg-yellow-500 hover:bg-yellow-600 text-black">
-              Login
-            </button>
+            {session?.user ? (
+              <button className="btn px-10 py-3 rounded-sm bg-yellow-500 hover:bg-yellow-600 text-black"
+              onClick={() => router.push('/profile')}
+              >
+                Profile
+              </button>
+            ) : (
+              <button className="btn px-10 py-3 rounded-sm bg-yellow-500 hover:bg-yellow-600 text-black"
+              onClick={() => signIn()}
+              >
+                Login
+              </button>
+            )}
           </div>
           <div className="bg-gray-500/30 h-px w-full mt-2"></div>
 

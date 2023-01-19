@@ -4,8 +4,8 @@ import EmailProvider from 'next-auth/providers/email';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-// import { AuthController } from 'helper/authController';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient();
 
@@ -28,25 +28,18 @@ const options: NextAuthOptions = {
           email: string;
           password: string;
         };
-        const user = await prisma.user
-          .findFirst({
-            where: { email: email },
-          })
-          .then((user) => {
-            if (!user) throw new Error('User not found');
-            const isMatch = AuthController.bcrypt.compareSync(
-              password,
-              user.password as string
-            );
-            if (!isMatch) throw new Error('Incorrect password');
-            user.name = user.username;
-            return user;
-          })
-          .catch((error) => {
-            throw new Error(error);
-          })
-          .finally(async () => await prisma.$disconnect());
-        return user;
+        const client = prisma.user;
+        const user = await client.findFirst({where: {email: email}})
+        if(!user) {
+           console.log('User not found')
+          return null
+        }
+        const isMatch = bcrypt.compareSync(password, user.password)
+        if(!isMatch) {
+          console.log('Password do not match')
+          return null
+        }
+        return user
       },
     }),
 
@@ -73,7 +66,7 @@ const options: NextAuthOptions = {
   ],
 
   pages: {
-    signIn: '/auth/login', // Displays signin buttons
+    signIn: '/login', // Displays signin buttons
     // signOut: '/auth/signout', // Displays form with sign out button
     // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // Used for check email page
@@ -119,12 +112,12 @@ const options: NextAuthOptions = {
     },
     async session({ session, token, user }) {
       const db = await prisma.user.findFirst({
-        where: { email: session.user.email },
+        where: { email: session?.user?.email as string},
       });
-      const role = db?.role;
-      session.user.role = role;
-      session.user.id = db?.id;
-      await prisma.$disconnect();
+      // const role = db?.role;
+      // session.user.role = role;
+      // session.user.id = db?.id;
+      // await prisma.$disconnect();
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {

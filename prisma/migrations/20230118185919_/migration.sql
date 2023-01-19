@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "userId" DROP DEFAULT,
+ALTER COLUMN "categoryId" DROP DEFAULT;

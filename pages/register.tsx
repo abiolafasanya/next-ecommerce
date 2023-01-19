@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { AlertMsg as Alert } from '@utility/Alert';
+import { AlertMsg as Alert } from '../components/Alert';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Axios from '../utils/Axios';
 
 const Register = () => {
   const router = useRouter();
@@ -20,6 +21,44 @@ const Register = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (passwordRef?.current?.value !== password2Ref?.current?.value) {
+      setError(true);
+      setMessage('Password do not match');
+      setTimeout(() => {
+        setError(false);
+        setMessage('');
+      }, 3000);
+      return;
+    }
+    const formData = {
+      name: userRef?.current?.value,
+      username: userRef?.current?.value,
+      email: emailRef?.current?.value,
+      password: passwordRef?.current?.value,
+    };
+
+    const { data, status } = await Axios.post('/api/auth/register', formData);
+    if (data.error) {
+      console.log(data.error);
+      setError(true);
+      setMessage('Registration failed');
+      setTimeout(() => {
+        setError(false);
+        setMessage('');
+      }, 3000);
+      return null;
+    }
+    if (status === 201 || status === 200) {
+      console.log(status, data);
+      setError(false);
+      setSuccess(true);
+      setMessage('Registration was successful');
+      setTimeout(() => {
+        setSuccess(false);
+        setMessage('');
+      }, 3000);
+      return;
+    }
   };
 
   return (
@@ -81,7 +120,7 @@ const Register = () => {
             <div className="form-group">
               <div className="flex items-center justify-between">
                 <button className="btn">Submit</button>
-                <Link href="/auth/login">
+                <Link href="/login">
                   have an account Already?{' '}
                   <span className="text-blue-500">Login</span>
                 </Link>

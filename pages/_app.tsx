@@ -5,7 +5,8 @@ import { CartProvider } from '../context/CartProvider';
 import { ThemeProvider } from 'next-themes';
 import { motion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {MobileProvider } from '../context/MobileProvider'
+import { MobileProvider } from '../context/MobileProvider';
+import { AuthProvider } from '../context/AuthProvider';
 
 const queryClient = new QueryClient();
 
@@ -17,23 +18,25 @@ function MyApp({
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" attribute="class">
-        <CartProvider>
-          <SessionProvider session={session}>
-            <motion.div
-              initial="pageInitial"
-              animate="pageAnimate"
-              variants={{
-                pageInitial: { opacity: 0 },
-                pageAnimate: { opacity: 1 },
-              }}
-              key={router.route}
-            >
-              <MobileProvider>
-              <Component {...pageProps} />
-              </MobileProvider>
-            </motion.div>
-          </SessionProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <SessionProvider session={session}>
+              <motion.div
+                initial="pageInitial"
+                animate="pageAnimate"
+                variants={{
+                  pageInitial: { opacity: 0 },
+                  pageAnimate: { opacity: 1 },
+                }}
+                key={router.route}
+              >
+                <MobileProvider>
+                  <Component {...pageProps} />
+                </MobileProvider>
+              </motion.div>
+            </SessionProvider>
+          </CartProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
