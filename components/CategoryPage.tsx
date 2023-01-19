@@ -2,9 +2,14 @@ import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React, { useState, useEffect } from 'react';
 import Axios from '../utils/Axios';
+import { AlertMsg } from './Alert';
 
 const CategoryPage = ({ ca, className }: any) => {
   const [cats, setCats] = useState<Category[]>([]);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
     const controller = new AbortController();
     setCats(ca);
@@ -13,6 +18,7 @@ const CategoryPage = ({ ca, className }: any) => {
       controller.abort();
     };
   }, [cats, ca]);
+
   async function handleSubmit(e: any) {
     e.preventDefault();
     const { category } = e.target.elements;
@@ -21,7 +27,7 @@ const CategoryPage = ({ ca, className }: any) => {
     });
     if (data.error) return console.log(data.error);
     if (status === 200 || status === 201) {
-      return console.log(status, data);
+      return;
     }
   }
 
@@ -44,7 +50,8 @@ const CategoryPage = ({ ca, className }: any) => {
           </button>
         </div>
       </form>
-
+      {error && <AlertMsg type={'alert-error'} message={message} />}
+      {success && <AlertMsg type={'alert-success'} message={message} />}
       <h1 className="text-2xl">Categories</h1>
       <div className="block">
         {cats?.length > 0 ? (
