@@ -1,4 +1,4 @@
-import React, { useState, useRef, useId } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { useFormik, Formik } from 'formik';
 import dynamic from 'next/dynamic';
 import CreatableSelect from 'react-select/creatable';
@@ -13,6 +13,7 @@ import CategoryPage from '../../components/CategoryPage';
 import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { AlertMsg } from '../../components/Alert';
+import { useSession, getSession, signIn } from 'next-auth/react';
 
 const Editor = dynamic<EditorProps>(
   () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
@@ -31,17 +32,32 @@ type Iprops = {
   categories: Category[];
 };
 
-const options = [
-  { value: 'newArrival', label: 'New Arrival' },
-  { value: 'topSeller', label: 'Top Seller' },
-  { value: 'bestSeller', label: 'Best Seller' },
-];
+// const options = [
+// { value: 'newArrival', label: 'New Arrival' },
+// { value: 'topSeller', label: 'Top Seller' },
+// { value: 'bestSeller', label: 'Best Seller' },
+// ];
 
 const AddProduct: React.FC<Iprops> = ({ categories }) => {
-  const [category, setCategory] = useState<any>([]);
+  const [category, setCategory] = useState<any>();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    console.log(category);
+
+    return () => {
+      controller.abort();
+    };
+  }, [category]);
+  const { status, data: session } = useSession();
+
+  const options = [] as any;
+
+  const catOptions = categories.forEach((category) => {
+    options.push({ value: category.id, label: category.name });
+  });
 
   const [editorState, setEditorState] = useState<EditorState>(
     EditorState.createEmpty()
@@ -61,12 +77,18 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
       name: name.value,
       price: parseFloat(price.value),
       brief: brief.value,
-      category,
+      categoryId: category,
       description: draftToHtml(convertToRaw(editorState.getCurrentContent())),
     };
 
     const { data, status } = await Axios.post('/api/product/add', formData);
-    if (data.error) {
+    if (
+      data.error ||
+      status === 400 ||
+      status === 401 ||
+      status === 404 ||
+      status === 500
+    ) {
       setError(true);
       setMessage('Failed, please check your inputs and try again later');
       setTimeout(() => {
@@ -102,13 +124,13 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
               <label htmlFor="name" className="form-label">
                 Product Name
               </label>
-              <input type="text" className="form-control" />
+              <input type="text" id="name" className="form-control" />
             </div>
             <div className="form-group">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="brief" className="form-label">
                 Brief
               </label>
-              <input type="text" className="form-control" />
+              <input type="text" id="brief" className="form-control" />
             </div>
             <div className="form-group">
               <label htmlFor="name" className="form-label">
@@ -126,10 +148,15 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="name" id="price" className="form-label">
                 Price
               </label>
-              <input type="number" step="0.01" className="form-control" />
+              <input
+                type="number"
+                id="price"
+                step="0.01"
+                className="form-control"
+              />
             </div>
             <div className="form-group">
               <label htmlFor="name" className="form-label">
@@ -139,8 +166,11 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
                 instanceId={useId()}
                 inputId="category"
                 isClearable
-                isMulti
-                onChange={(e) => setCategory(e.map((item: any) => item.value))}
+                // isMulti
+                options={options}
+                defaultValue={options[0]}
+                onChange={(e) => setCategory(e.value)}
+                // onChange={(e) => setCategory(e.map((item: any) => item.value))}
               />
             </div>
             <div className="form-group">

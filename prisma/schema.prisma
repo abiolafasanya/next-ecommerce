@@ -56,11 +56,12 @@ model Product {
   image       String?
   description String?
   brief       String?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tags        String[]
   user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   userId      String?
+  category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  String?
 }
 

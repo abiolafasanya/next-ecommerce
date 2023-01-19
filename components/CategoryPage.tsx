@@ -32,7 +32,7 @@ const CategoryPage = ({ ca, className }: any) => {
   }
 
   return (
-    <div className={className + 'block w-full'}>
+    <div className={className + 'block w-full lg:mt-[100px]'}>
       <h1 className="text-2xl text-center">Add Category</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
