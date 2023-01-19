@@ -8,7 +8,6 @@ const CategoryPage = ({ ca, className }: any) => {
   useEffect(() => {
     const controller = new AbortController();
     setCats(ca);
-    console.log(cats, ca);
 
     return () => {
       controller.abort();
