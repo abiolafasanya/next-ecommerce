@@ -3,18 +3,17 @@ import { GetServerSideProps } from 'next';
 import React, { useState, useEffect } from 'react';
 import Axios from '../utils/Axios';
 
-
 const CategoryPage = ({ ca, className }: any) => {
-  const [cats, setCats] = useState<Category[]>([])
+  const [cats, setCats] = useState<Category[]>([]);
   useEffect(() => {
     const controller = new AbortController();
-    setCats(cats)
-    console.log(cats, ca)
+    setCats(ca);
+    console.log(cats, ca);
 
     return () => {
       controller.abort();
-    }
-  }, [cats, ca])
+    };
+  }, [cats, ca]);
   async function handleSubmit(e: any) {
     e.preventDefault();
     const { category } = e.target.elements;
@@ -28,7 +27,7 @@ const CategoryPage = ({ ca, className }: any) => {
   }
 
   return (
-    <div className={className}>
+    <div className={className + 'block w-full'}>
       <h1 className="text-2xl text-center">Add Category</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -48,18 +47,18 @@ const CategoryPage = ({ ca, className }: any) => {
       </form>
 
       <h1 className="text-2xl">Categories</h1>
-      <div className="inline-block">
+      <div className="block">
         {cats?.length > 0 ? (
-          cats?.map((cat: any) => (
+          cats?.map((cat) => (
             <div
               key={cat.id}
-              className="bg-dark/10 text-black rounded-sm shadow-md"
+              className="bg-dark/10 text-base capitalize py-2 px-12 text-black rounded-sm shadow-md"
             >
-              {cat}
+              {cat.name}
             </div>
           ))
         ) : (
-          <div className="text-base ">No data found</div>
+          <div className="text-base py-3 px-10">No data found</div>
         )}
       </div>
     </div>
