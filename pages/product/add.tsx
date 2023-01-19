@@ -27,11 +27,10 @@ interface MyFormValues {
 }
 
 type Iprops = {
-  categories : Category[];
-}
+  categories: Category[];
+};
 
-const AddProduct: React.FC<Iprops> = ({categories}) => {
-
+const AddProduct: React.FC<Iprops> = ({ categories }) => {
   const [category, setCategory] = useState<any>([]);
 
   const [editorState, setEditorState] = useState<EditorState>(
@@ -53,7 +52,7 @@ const AddProduct: React.FC<Iprops> = ({categories}) => {
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    const {name, price, brief} = event.target.elements;
+    const { name, price, brief } = event.target.elements;
     const formData = {
       name: name.value,
       price: parseFloat(price.value),
@@ -109,11 +108,7 @@ const AddProduct: React.FC<Iprops> = ({categories}) => {
               <label htmlFor="name" className="form-label">
                 Price
               </label>
-              <input
-                type="number"
-                step="0.01"
-                className="form-control"
-              />
+              <input type="number" step="0.01" className="form-control" />
             </div>
             <div className="form-group">
               <label htmlFor="name" className="form-label">
@@ -134,7 +129,7 @@ const AddProduct: React.FC<Iprops> = ({categories}) => {
             </div>
           </form>
         </div>
-        <CategoryPage categories={categories} className="lg:w-[25%] p-5" />
+        <CategoryPage ca={categories} className="lg:w-[25%] p-5" />
       </div>
     </NoSSR>
   );

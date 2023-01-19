@@ -1,18 +1,23 @@
 import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Axios from '../utils/Axios';
 
-type Iprops = {
-  categories: Category[];
-  className: string;
-};
 
-const CategoryPage = ({ categories, className }: Iprops) => {
+const CategoryPage = ({ ca, className }: any) => {
+  const [cats, setCats] = useState<Category[]>([])
+  useEffect(() => {
+    const controller = new AbortController();
+    setCats(cats)
+    console.log(cats, ca)
+
+    return () => {
+      controller.abort();
+    }
+  }, [cats, ca])
   async function handleSubmit(e: any) {
     e.preventDefault();
     const { category } = e.target.elements;
-    // console.log(category.value);
     const { data, status } = await Axios.post('/api/product/add-category', {
       name: category.value,
     });
@@ -44,8 +49,8 @@ const CategoryPage = ({ categories, className }: Iprops) => {
 
       <h1 className="text-2xl">Categories</h1>
       <div className="inline-block">
-        {categories?.length > 0 ? (
-          categories?.map((cat: any) => (
+        {cats?.length > 0 ? (
+          cats?.map((cat: any) => (
             <div
               key={cat.id}
               className="bg-dark/10 text-black rounded-sm shadow-md"
