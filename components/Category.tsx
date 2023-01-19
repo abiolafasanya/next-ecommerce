@@ -1,11 +1,15 @@
-import { PrismaClient } from '@prisma/client';
+import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import React, { useRef } from 'react';
 import Axios from '../utils/Axios';
 import NoSSR from './NoSSR';
 
-const Category = () => {
-  const categories = props.categories;
+type Iprops = {
+  categories: Category[];
+  className: string;
+};
+
+const Category = ({ categories, className }: Iprops) => {
   async function handleSubmit(e: any) {
     e.preventDefault();
     const { category } = e.target.elements;
@@ -20,7 +24,7 @@ const Category = () => {
   }
 
   return (
-    <div className={props.className}>
+    <div className={className}>
       <h1 className="text-2xl text-center">Add Category</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -41,14 +45,18 @@ const Category = () => {
 
       <h1 className="text-2xl">Categories</h1>
       <div className="inline-block">
-        {props?.categories?.map((cat: any) => (
-          <div
-            key={cat.id}
-            className="bg-dark/10 text-black rounded-sm shadow-md"
-          >
-            {cat}
-          </div>
-        ))}
+        {categories?.length > 0 ? (
+          categories?.map((cat: any) => (
+            <div
+              key={cat.id}
+              className="bg-dark/10 text-black rounded-sm shadow-md"
+            >
+              {cat}
+            </div>
+          ))
+        ) : (
+          <div className="text-base ">No data found</div>
+        )}
       </div>
     </div>
   );
