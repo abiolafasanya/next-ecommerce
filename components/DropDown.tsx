@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MdPersonOutline, MdVerifiedUser } from 'react-icons/md';
-import { useSession, getSession } from 'next-auth/react';
-
+import { useSession, getSession, signIn } from 'next-auth/react';
 import { dropMenu } from '../data/drop';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 
 const DropDown = () => {
   const [open, setOpen] = useState(false);
   const { status, data: session } = useSession();
+  const router = useRouter()
   return (
     <div className="relative flex items-center">
       <button

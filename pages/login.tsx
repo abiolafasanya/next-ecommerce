@@ -21,14 +21,13 @@ const Login: NextPage<IProps> = ({ csrfToken }) => {
   let { push, asPath } = useRouter();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    // console.log(session);
+  useLayoutEffect(() => {
     if (status === 'authenticated') {
       setTimeout(() => {
         push('/');
       }, 500);
     }
-  }, [status]);
+  }, [status, push]);
 
   const [email, setEmail] = useState('');
   const [OAuthEmail, setOAuthEmail] = useState('');
