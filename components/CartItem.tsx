@@ -20,8 +20,8 @@ const CartItem = ({ id, quantity, products }: CartItemProps) => {
   if (item == null) return null;
 
   return (
-    <div className="flex items-center justify-between text-black bg-white rounded-md shadow-lg shadow-orange-50 mx-3">
-      <div className="flex space-x-px items-center">
+    <div className="flex flex-wrap items-center justify-between text-black bg-white rounded-md shadow-lg shadow-orange-50 mx-3">
+      <div className="flex flex-wrap space-x-px items-center">
         <Image
           src={item.image as string}
           height={75}

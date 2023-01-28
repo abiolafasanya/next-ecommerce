@@ -22,7 +22,7 @@ const MobileMenu = () => {
               className="ml-auto text-[2rem] text-gray-500"
               onClick={() => setOpen(false)}
             />
-            <div className="flex flex-col gap-y-4">
+            <div className="flex flex-wrap flex-col gap-y-4">
               {navMenus.map((menu, index) => (
                 <Link
                   key={index}
