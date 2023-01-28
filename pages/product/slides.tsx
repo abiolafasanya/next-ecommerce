@@ -21,7 +21,7 @@ export class slides extends Component<classProps, classTypes> {
     this.inputRef.current?.focus()
   }
 
-  constructor(props) {
+  constructor(props :classProps) {
     super(props);
     this.state = {
       firstname: '',

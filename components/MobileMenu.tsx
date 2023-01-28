@@ -4,13 +4,8 @@ import { MdClose } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import NoSSR from './NoSSR';
 import useMobile from '../hooks/useMobile';
+import { navMenus } from '../data/drop';
 
-const menus = [
-  { id: 1, text: 'Home', link: '/home' },
-  { id: 2, text: 'Store', link: '/store' },
-  { id: 3, text: 'Trending', link: '/trending' },
-  { id: 4, text: 'About', link: '/About' },
-];
 
 const MobileMenu = () => {
   const { open, setOpen } = useMobile();
@@ -28,7 +23,7 @@ const MobileMenu = () => {
               onClick={() => setOpen(false)}
             />
             <div className="flex flex-col gap-y-4">
-              {menus.map((menu, index) => (
+              {navMenus.map((menu, index) => (
                 <Link
                   key={index}
                   href={menu.link}

@@ -9,7 +9,7 @@ import DropDown from './DropDown';
 import Search from './Search';
 import { MdMenu } from 'react-icons/md';
 import useMobile from '../hooks/useMobile';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { navMenus } from '../data/drop';
 
 const Nav = () => {

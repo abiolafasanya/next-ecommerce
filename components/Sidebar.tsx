@@ -1,11 +1,9 @@
-import React, { ReactNode, useEffect, useMemo } from 'react';
-import { FaTimes } from 'react-icons/fa';
-import { MdCancel, MdClose } from 'react-icons/md';
+import React from 'react';
+import { MdClose } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import UseCart from '../hooks/useCart';
 import CartItem from './CartItem';
 import { formatCurrency } from '../utils/formatter';
-import storeData from '../data/items.json';
 import { Product } from '@prisma/client';
 import NoSSR from './NoSSR';
 
