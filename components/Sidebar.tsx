@@ -43,8 +43,8 @@ const Sidebar = ({ isOpen, products }: Props) => {
           </div>
           {/* <div className="flex flex-col">
             </div> */}
-          {cartItems.map((item) => (
-            <CartItem key={item.id} {...item} products={products} />
+          {cartItems.map((item, id) => (
+            <CartItem key={id} {...item} products={products} />
           ))}
 
           <div className="font-semibold mx-5 float-right my-4">

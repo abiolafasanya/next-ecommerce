@@ -34,7 +34,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
     decreaseCartQuantity,
     removeCartQuantity,
   } = UseCart();
-
+  
   const quantity = getItemQuantity(id);
   return (
     <>
@@ -43,13 +43,13 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
       ) : (
         <div className="flex flex-col card bg-white/50 border rounded-md shadow-lg w-full p-0">
           <Image
-            src={image || ''}
+            src={image || 'https://th.bing.com/th/id/OIP.KhEKUkd4eL9dJObSIXjmCwHaHa?pid=ImgDet&rs=1'}
             className="w-full md:h-[300px] lg:h-[250px]"
             width={250}
             height={250}
             alt={name}
           />
-          <div className="flex justify-between items-center my-2 mx-3 ">
+          <div className="flex flex-wrap justify-between items-center my-2 mx-3 ">
             <div className="text-lg font-semibold">{name}</div>
             <div className="text-medium">{formatCurrency(price)}</div>
           </div>

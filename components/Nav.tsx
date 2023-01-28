@@ -16,9 +16,7 @@ const Nav = () => {
   const { openCart, cartQuantity } = UseCart();
   const { open, setOpen } = useMobile();
   const { status, data: session } = useSession();
-  // const { theme, setTheme } = useTheme();
   return (
-    // <nav className="sm:w-full lg:max-w-6xl lg:mx-auto w-full py-2 bg-gray-700 px-3 sticky">
     <nav className="sm:w-full md:px-10 lg:px-12 w-full py-2 bg-gray-700 px-3 sticky">
       <NoSSR>
         <div className="flex items-center justify-between">

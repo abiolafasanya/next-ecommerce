@@ -28,9 +28,9 @@ const MobileMenu = () => {
               onClick={() => setOpen(false)}
             />
             <div className="flex flex-col gap-y-4">
-              {menus.map((menu) => (
+              {menus.map((menu, index) => (
                 <Link
-                  key={menu.id}
+                  key={index}
                   href={menu.link}
                   className="hover:bg-black/10 p-3 text-black"
                 >

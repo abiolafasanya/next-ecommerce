@@ -25,7 +25,7 @@ export default function Container(props: any) {
   return (
     <div className="w-full">
       <Head>
-        <title>Ecommer Website</title>
+        <title>Express - Ecommerce</title>
         <meta name="description" content="Shop store for the Ecommer website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import Container from '../../components/Container';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
-import Image from 'next/image';
+import { Category, Product, PrismaClient } from '@prisma/client';
+import { GetServerSideProps, NextPage } from 'next';
+import StoreItem from '../../components/StoreItem';
 
 const slides = [
   {
@@ -31,51 +33,99 @@ const slides = [
     caption: 'This is Fancy',
   },
 ];
-const index = () => {
+
+interface Iprops {
+  categories: Category[];
+  products: Product[];
+}
+
+const Index: NextPage<Iprops> = (props) => {
+  const { products, categories } = props;
+
+  useMemo(() => {
+    const controller = new AbortController();
+    console.log(products);
+    console.log(categories);
+
+    return () => {
+      controller.abort();
+    };
+  }, [products, categories]);
+
   return (
     <Container>
       <header className="h-1/2 w-full">
-        <Slide indicators >
+        <Slide indicators>
           {slides.map((each, index) => (
-            <>
-              <div key={index}>
-                <div
-                  className="backdrop:opacity-50"
-                  style={{ ...divStyle, backgroundImage: `url(${each.url})` }}
-                >
-                  <span
-                    style={spanStyle}
-                    className="text-2xl font-semibold bg-black/20 text-white shadow-sm"
-                  >
-                    Slide {' '} {index + 1}
-                  </span>
-                </div>
+            <div key={index}>
+              <div
+                className="backdrop:opacity-50 flex items-center justify-center bg-cover bg-center h-[50vh]"
+                style={{ backgroundImage: `url(${each.url})` }}
+              >
+                <span className="text-2xl p-5 font-semibold bg-black/20 text-white shadow-sm">
+                  Slide {index + 1}
+                </span>
               </div>
-            </>
+            </div>
           ))}
         </Slide>
       </header>
+      <main>
+        <div className="max-w-6xl mx-auto mt-5 ">
+          <section>
+            <h1 className="text2xl">Recent</h1>
+            <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-col-4">
+              {products.map((product, index) => (
+                <>
+                  {product.categoryId === categories[0].id && (
+                    <StoreItem key={index} {...product} />
+                  )}
+                </>
+              ))}
+            </div>
+          </section>
+          <section>
+            <h1 className="text2xl">Men Fashion</h1>
+            <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-col-4">
+              {products.map((product, index) => (
+                <>
+                  {product.categoryId === categories[1].id && (
+                    <StoreItem key={index} {...product} />
+                  )}
+                </>
+              ))}
+            </div>
+          </section>
+          <section>
+            <h1 className="text2xl">Women Fashion</h1>
+            <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-col-4">
+              {products.map((product, index) => (
+                <>
+                  {product.categoryId === categories[2].id && (
+                    <StoreItem key={index} {...product} />
+                  )}
+                </>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
     </Container>
   );
 };
 
-const spanStyle = {
-  padding: '20px',
-  // width: '50vw',
-  // height: '50vh',
-  // display: 'flex',
-  // justifyContent: 'center',
-  // alignItems: 'center',
-  // background: '#efefef',
-};
+export default Index;
 
-const divStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundSize: 'cover',
-  height: '500px',
-  backgroundPosition: 'center',
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+  const client = prisma.product;
+  const client2 = prisma.category;
+  const categories = await client2.findMany();
+  const products = await client.findMany();
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+      categories: JSON.parse(JSON.stringify(categories)),
+    },
+  };
 };
-
-export default index;
