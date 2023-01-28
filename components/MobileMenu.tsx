@@ -13,7 +13,7 @@ const MobileMenu = () => {
     <>
       {open && (
         <motion.div
-          className="z-auto sm:inline-block lg:hidden w-full absolute top-[4rem] h-screen bg-yellow-500/10 shadow-r-md p-3"
+          className="z-auto sm:inline-block lg:hidden w-full absolute top-[4rem] h-screen bg-gray-100 shadow-r-md p-3"
           initial={{ width: 0 }}
           animate={{ width: '80%' }}
         >
