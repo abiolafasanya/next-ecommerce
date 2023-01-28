@@ -17,6 +17,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
+
     const l = setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -43,7 +44,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
         <div className="flex flex-col card bg-white/50 border rounded-md shadow-lg w-full p-0">
           <Image
             src={image || ''}
-            className="w-full"
+            className="w-full md:h-[300px] lg:h-[250px]"
             width={250}
             height={250}
             alt={name}
@@ -69,7 +70,7 @@ const StoreItem: React.FC<ItemProp> = ({ id, name, price, image }) => {
                   >
                     -
                   </Button>
-                  <div className='text-black'>
+                  <div className="text-black">
                     <span className="text-xl font-semibold">{quantity}</span> in
                     Cart
                   </div>

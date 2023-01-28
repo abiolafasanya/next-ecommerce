@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'home-bg': "url('../public/cloth1.jpg')"
+        'home-bg': "url('https://res.cloudinary.com/fastbeetech/image/upload/v1674302179/ecommerce/o8usorwzv4ajq1c1f7cb.jpg')",
       },
       fontFamily: {
         barlow: ['Barlow', 'sans-serif'],
@@ -25,3 +25,5 @@ module.exports = {
   },
   plugins: [],
 };
+
+// 'home-bg': "url('https://res.cloudinary.com/fastbeetech/image/upload/v1674302179/ecommerce/o8usorwzv4ajq1c1f7cb.jpg')" || "url('../public/cloth1.jpg')"

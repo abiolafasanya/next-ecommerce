@@ -71,6 +71,14 @@ model Category {
   Product Product[]
 }
 
+model Image {
+  id        String   @id @default(cuid())
+  image     String
+  folder    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Cart {
   id       String @id @default(cuid())
   quantity Int

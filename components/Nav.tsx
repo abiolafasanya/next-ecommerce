@@ -10,7 +10,7 @@ import Search from './Search';
 import { MdMenu } from 'react-icons/md';
 import useMobile from '../hooks/useMobile';
 import { useSession, getSession } from 'next-auth/react';
-
+import { navMenus } from '../data/drop';
 
 const Nav = () => {
   const { openCart, cartQuantity } = UseCart();
@@ -20,7 +20,6 @@ const Nav = () => {
   return (
     // <nav className="sm:w-full lg:max-w-6xl lg:mx-auto w-full py-2 bg-gray-700 px-3 sticky">
     <nav className="sm:w-full md:px-10 lg:px-12 w-full py-2 bg-gray-700 px-3 sticky">
-
       <NoSSR>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -40,18 +39,14 @@ const Nav = () => {
               </Link>
             </div>
             <ul className="sm:hidden lg:flex space-x-8 text-white text-[14px]">
-              <li className="hover:text-gray-200 transition-all ease-in-out">
-                <Link href={'/'}>Home</Link>
-              </li>
-              <li className="hover:text-gray-200 transition-all ease-in-out">
-                <Link href={'/stroe'}>Store</Link>
-              </li>
-              <li className="hover:text-gray-200 transition-all ease-in-out">
-                <Link href={'/trending'}>Trending</Link>
-              </li>
-              <li className="hover:text-gray-200 transition-all ease-in-out">
-                <Link href={'/about'}>About</Link>
-              </li>
+              {navMenus.map((menu, index) => (
+                <li
+                  key={index}
+                  className="hover:text-gray-200 transition-all ease-in-out"
+                >
+                  <Link href={menu.link}>{menu.text}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="flex md:space-x-8">

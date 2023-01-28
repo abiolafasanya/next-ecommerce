@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useId } from 'react';
-import { useFormik, Formik } from 'formik';
 import dynamic from 'next/dynamic';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { EditorProps } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import * as Yup from 'yup';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import NoSSR from '../../components/NoSSR';
 import Axios from '../../utils/Axios';
@@ -14,35 +13,26 @@ import { Category, PrismaClient } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { AlertMsg } from '../../components/Alert';
 import { useSession, getSession, signIn } from 'next-auth/react';
+import { MdOutlineFileUpload } from 'react-icons/md';
 
 const Editor = dynamic<EditorProps>(
   () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
   { ssr: false }
 );
 
-interface MyFormValues {
-  name: string;
-  price: number;
-  description: string;
-  brief: string;
-  category: string[];
-}
-
 type Iprops = {
   categories: Category[];
 };
 
-// const options = [
-// { value: 'newArrival', label: 'New Arrival' },
-// { value: 'topSeller', label: 'Top Seller' },
-// { value: 'bestSeller', label: 'Best Seller' },
-// ];
-
 const AddProduct: React.FC<Iprops> = ({ categories }) => {
   const [category, setCategory] = useState<any>();
+  const [tags, setTags] = useState<any>([]);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
+  const [image, setImage] = useState('');
+  const [useImageLink, setUseImageLink] = useState(false)
+
   useEffect(() => {
     const controller = new AbortController();
     console.log(category);
@@ -51,8 +41,8 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
       controller.abort();
     };
   }, [category]);
-  const { status, data: session } = useSession();
 
+  const { status, data: session } = useSession();
   const options = [] as any;
 
   const catOptions = categories.forEach((category) => {
@@ -62,22 +52,49 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
   const [editorState, setEditorState] = useState<EditorState>(
     EditorState.createEmpty()
   );
-  const initialValues: MyFormValues = {
-    name: '',
-    price: 0.0,
-    description: '',
-    category: [],
-    brief: '',
-  };
+
+  
+  async function cloudinaryUpload(
+    url: string,
+    file: any,
+    options = { upload_present: 'my-uploads' }
+  ) {
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('upload_preset', options.upload_present as string);
+    const upload = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => data.secure_url)
+      .catch((err) => {
+        console.log(err);
+        return null;
+      });
+    return upload;
+  }
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    const { name, price, brief } = event.target.elements;
+    const { name, price, brief, image } = event.target.elements;
+
+    let URLCloudinary =
+    'https://api.cloudinary.com/v1_1/fastbeetech/image/upload';
+
+    const options = {upload_present: 'ecommerce'}
+    
+    const img = useImageLink ? await cloudinaryUpload(URLCloudinary, image, options) : image.value
+    console.log(img)
+
     const formData = {
       name: name.value,
       price: parseFloat(price.value),
       brief: brief.value,
       categoryId: category,
+      tags: tags,
+      image: await img,
       description: draftToHtml(convertToRaw(editorState.getCurrentContent())),
     };
 
@@ -112,6 +129,10 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
     console.log(formData);
   }
 
+  function handleImageType() {
+    setUseImageLink(type => !type)
+  }
+
   return (
     <NoSSR>
       <div className="max-w-6xl mx-auto flex sm:flex-col lg:flex-row">
@@ -133,7 +154,7 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
               <input type="text" id="brief" className="form-control" />
             </div>
             <div className="form-group">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="description" className="form-label">
                 Description
               </label>
               <Editor
@@ -159,10 +180,30 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="name" className="form-label">
+              <label htmlFor="image" id="image" className="form-label">
+                Image
+              </label>
+                {useImageLink ? (
+                  <>
+                <input type="text" id="image" className="form-control" placeholder={'Paste Image URL here'} />
+                 </>
+                 ) : (
+                   <div className="border rounded bg-blue-100">
+                   <MdOutlineFileUpload className="absolute mt-2 text-blue-50 mx-3 text-2xl" />
+                <input
+                  type="file"
+                  id="image"
+                  className="file:px-12 file:py-3 file:rounded-sm file:btn file:border-none"
+                  onChange={(e: any) => setImage(e.target.files[0])} />
+              </div>
+                )}
+                Paste Image link {"  "} <input type='checkbox' className='' onChange={handleImageType} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="category" className="form-label">
                 Category
               </label>
-              <CreatableSelect
+              <Select
                 instanceId={useId()}
                 inputId="category"
                 isClearable
@@ -171,6 +212,18 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
                 defaultValue={options[0]}
                 onChange={(e) => setCategory(e.value)}
                 // onChange={(e) => setCategory(e.map((item: any) => item.value))}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="tags" className="form-label">
+                Tags
+              </label>
+              <CreatableSelect
+                instanceId={useId()}
+                inputId="tags"
+                isClearable
+                isMulti
+                onChange={(e) => setTags(e.map((item: any) => item.value))}
               />
             </div>
             <div className="form-group">
