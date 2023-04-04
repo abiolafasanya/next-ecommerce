@@ -141,7 +141,7 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
   }
 
   return (
-    <Container>
+    <Container className=''>
       <NoSSR>
         <div className="max-w-6xl mx-auto flex sm:flex-col lg:flex-row">
           <div className="lg:w-[70%] p-5">

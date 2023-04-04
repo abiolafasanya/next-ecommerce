@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState, useLayoutEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { Inter } from '@next/font/google';
 import Nav from '../components/Nav';
 import Sidebar from '../components/Sidebar';
@@ -21,8 +21,8 @@ export default function Container(props: Iprops) {
   const { isOpen, closeCart } = UseCart();
   const [loading, setLoading] = useState(false);
 
-  useLayoutEffect(() => {
-    console.log(props.products, 'container')
+  useEffect(() => {
+    // console.log(props.products, 'container')
     setLoading(true);
     setTimeout(() => {
       setLoading(false);

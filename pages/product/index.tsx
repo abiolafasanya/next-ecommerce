@@ -53,7 +53,7 @@ const Index: NextPage<Iprops> = (props) => {
   }, [products, categories]);
 
   return (
-    <Container>
+    <Container className=''>
       <header className="h-1/2 w-full">
         <Slide indicators>
           {slides.map((each, index) => (
