@@ -1,20 +1,22 @@
 import Head from 'next/head';
-import { useEffect, useState, useLayoutEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useState, useLayoutEffect } from 'react';
 import { Inter } from '@next/font/google';
 import Nav from '../components/Nav';
 import Store from '../components/Store';
 import Sidebar from '../components/Sidebar';
 import UseCart from '../hooks/useCart';
 import { ThreeCircles } from 'react-loader-spinner';
-import { PrismaClient } from '@prisma/client';
-import { GetServerSideProps, GetStaticProps } from 'next';
+import { PrismaClient, Product } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 import MobileMenu from '../components/MobileMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home(props: any) {
+interface Iprops {
+  products: Product[]
+}
+
+export default function Home(props: Iprops) {
   const { isOpen, closeCart } = UseCart();
   const [loading, setLoading] = useState(false);
 
@@ -28,8 +30,8 @@ export default function Home(props: any) {
   return (
     <div className="w-full">
       <Head>
-        <title>Ecommer Website</title>
-        <meta name="description" content="Shop store for the Ecommer website" />
+        <title>Ecommerce Website</title>
+        <meta name="description" content="Shop store for the Ecommerce website" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

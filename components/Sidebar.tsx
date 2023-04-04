@@ -6,18 +6,19 @@ import CartItem from './CartItem';
 import { formatCurrency } from '../utils/formatter';
 import { Product } from '@prisma/client';
 import NoSSR from './NoSSR';
+import Link from 'next/link';
 
 type Props = {
   isOpen: boolean;
   products: Product[];
-  // children: ReactNode;
+  // children?: ReactNode;
 };
 
 const Sidebar = ({ isOpen, products }: Props) => {
   const { closeCart, cartItems } = UseCart();
-  // useMemo(() => {
-  //   console.log(products);
-  // }, [products]);
+
+  console.log(products)
+ 
   return (
     <NoSSR>
       {isOpen && (
@@ -25,11 +26,6 @@ const Sidebar = ({ isOpen, products }: Props) => {
           className="absolute top-0 right-0 h-screen sm:w-full lg:w-[400px] bg-gray-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          // transition={{ ease: "easeOut", duration: 2 }}
-          // exit={{opacity: 0, transition: {duration: 5}}}
-          // onClick={(e) =>
-          //   console.log(e.currentTarget.parentElement)
-          // }
         >
           <div className="flex justify-between items-center px-4 py-5">
             <h1 className="text-lg font-semibold">Cart</h1>
@@ -39,13 +35,12 @@ const Sidebar = ({ isOpen, products }: Props) => {
               onClick={() => closeCart()}
             />
           </div>
-          {/* <div className="flex flex-col">
-            </div> */}
+
           {cartItems.map((item, id) => (
             <CartItem key={id} {...item} products={products} />
           ))}
 
-          <div className="font-semibold mx-5 float-right my-4">
+          <div className="font-semibold mx-5 text-right ml-auto my-4">
             Total{' '}
             {formatCurrency(
               cartItems.reduce((total, cartItem) => {
@@ -55,6 +50,10 @@ const Sidebar = ({ isOpen, products }: Props) => {
               }, 0)
             )}
           </div>
+
+            <div className='flex mt-8 text-center w-[128px] mx-auto'>
+              <Link href={'/checkout'} className='py-3 px-8 rounded-sm inline-block bg-yellow-500 hover:bg-yellow-600 text-black'>Checkout</Link>
+            </div>
         </motion.div>
       )}
     </NoSSR>

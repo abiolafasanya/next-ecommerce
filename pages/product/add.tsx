@@ -105,34 +105,33 @@ const AddProduct: React.FC<Iprops> = ({ categories }) => {
       description: draftToHtml(convertToRaw(editorState.getCurrentContent())),
     };
 
-    // const { data, status } = await Axios.post('/api/product/add', formData);
-    // if (
-    //   data.error ||
-    //   status === 400 ||
-    //   status === 401 ||
-    //   status === 404 ||
-    //   status === 500
-    // ) {
-    //   setError(true);
-    //   setMessage('Failed, please check your inputs and try again later');
-    //   setTimeout(() => {
-    //     setError(false);
-    //     setMessage('');
-    //   }, 3000);
-    //   console.log(status, data.error);
-    //   return;
-    // }
-    // if (status === 201 || status === 200) {
-    //   // console.log(data);
-    //   setSuccess(true);
-    //   setMessage('Product was added successfully');
-    //   setTimeout(() => {
-    //     setSuccess(false);
-    //     setMessage('');
-    //     productRef.current?.value, priceRef.current?.value, briefRef.current?.value, imageRef?.current?.value = '';
-    //   }, 3000);
-    //   return;
-    // }
+    const { data, status } = await Axios.post('/api/product/add', formData);
+    if (
+      data.error ||
+      status === 400 ||
+      status === 401 ||
+      status === 404 ||
+      status === 500
+    ) {
+      setError(true);
+      setMessage('Failed, please check your inputs and try again later');
+      setTimeout(() => {
+        setError(false);
+        setMessage('');
+      }, 3000);
+      console.log(status, data.error);
+      return;
+    }
+    if (status === 201 || status === 200) {
+      // console.log(data);
+      setSuccess(true);
+      setMessage('Product was added successfully');
+      setTimeout(() => {
+        setSuccess(false);
+        setMessage('');
+      }, 3000);
+      return;
+    }
 
     console.log(formData);
   }

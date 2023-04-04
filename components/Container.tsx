@@ -1,21 +1,28 @@
 import Head from 'next/head';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, ReactNode } from 'react';
 import { Inter } from '@next/font/google';
 import Nav from '../components/Nav';
 import Sidebar from '../components/Sidebar';
 import UseCart from '../hooks/useCart';
 import { ThreeCircles } from 'react-loader-spinner';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Product } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import MobileMenu from '../components/MobileMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Container(props: any) {
+interface Iprops {
+  className: string;
+  products?: Product[];
+  children: ReactNode;
+}
+
+export default function Container(props: Iprops) {
   const { isOpen, closeCart } = UseCart();
   const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
+    console.log(props.products, 'container')
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -46,7 +53,7 @@ export default function Container(props: any) {
       ) : (
         <>
           <Nav />
-          <Sidebar isOpen={isOpen} products={props.products} />
+          <Sidebar isOpen={isOpen} products={props?.products as Product[]} />
           <MobileMenu />
 
           <main

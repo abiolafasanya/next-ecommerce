@@ -35,6 +35,7 @@ export const CartProvider: React.FC<PropTypes> = ({ children }) => {
   function openCart() {
     setIsOpen(true);
   }
+  
   function closeCart() {
     setIsOpen(false);
   }

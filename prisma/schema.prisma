@@ -6,13 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String
@@ -29,17 +29,17 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id        String    @id @default(cuid())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
-  email     String
+  email     String    @unique
   username  String?
   password  String
   Account   Account[]
@@ -50,7 +50,7 @@ model User {
 }
 
 model Product {
-  id          String    @id @default(cuid())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   price       Float     @default(0.0)
   image       String?
@@ -60,19 +60,19 @@ model Product {
   user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  userId      String?
+  userId      String?   @db.ObjectId
   category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  String?
+  categoryId  String?   @db.ObjectId
 }
 
 model Category {
-  id      String    @id @default(cuid())
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
   name    String?
   Product Product[]
 }
 
 model Image {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   image     String
   folder    String
   createdAt DateTime @default(now())
@@ -80,11 +80,19 @@ model Image {
 }
 
 model Cart {
-  id       String @id @default(cuid())
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   quantity Int
 }
 
+model Order {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  shipment  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime

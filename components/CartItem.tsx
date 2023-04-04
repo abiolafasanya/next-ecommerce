@@ -1,10 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import UseCart from '../hooks/useCart';
-import storeData from '../data/items.json';
 import { formatCurrency } from '../utils/formatter';
 import Button from './Button';
-import { MdCancel, MdClose } from 'react-icons/md';
+import { MdAdd, MdClose, MdDelete, MdDeleteOutline, MdRemove } from 'react-icons/md';
 import { Product } from '@prisma/client';
 
 type CartItemProps = {
@@ -14,9 +13,10 @@ type CartItemProps = {
 };
 
 const CartItem = ({ id, quantity, products }: CartItemProps) => {
-  const { removeCartQuantity, increaseCartQuantity } = UseCart();
+  console.log(products)
+  const { removeCartQuantity, increaseCartQuantity, decreaseCartQuantity } = UseCart();
   const item =
-    products.length > 0 ? products.find((item) => item.id === id) : null;
+    products?.length > 0 ? products.find((item) => item.id === id) : null;
   if (item == null) return null;
 
   return (
@@ -28,18 +28,22 @@ const CartItem = ({ id, quantity, products }: CartItemProps) => {
           width={125}
           alt={item.name}
         />
-        <h5 className="text-sm font-semibold">{item.name}</h5>
       </div>
-      <div>{quantity}</div>
+        <h5 className="text-sm font-semibold">{item.name}</h5>
+      <div className='flex items-center'>
+          <MdRemove className='mr-3 p-1 rounded-sm text-2xl bg-gray-300 text-black' onClick={() => decreaseCartQuantity(item.id)} />
+          {quantity}
+          <MdAdd className='ml-3 p-1 rounded-sm text-2xl bg-gray-300 text-black' onClick={() => increaseCartQuantity(item.id)} />
+      </div>
       <div className="flex space-x-2 mr-2 items-center">
         <span className="text-small">
           {formatCurrency(item.price * quantity)}
         </span>
         <Button
-          className="bg-gray-200 hover:bg-red-500 px-5 py-2 rounded"
+          className="px-5 py-2 rounded"
           onClick={() => removeCartQuantity(item.id)}
         >
-          <MdClose />
+          <MdDeleteOutline className='sm:text-xl hover:text-red-500' />
         </Button>
       </div>
     </div>
